@@ -79,16 +79,37 @@ example : ¬(p ∧ ¬p) := by
   rintro ⟨ hp, hnp ⟩
   exact hnp hp
 
+-- proof 1: fp
+example : ¬p → (p → q) :=
+  fun hnp hp => absurd hp hnp
+
+-- proof2: tactics
+example : ¬p → (p → q) := by
+  rintro hnp hp
+  exact absurd hp hnp
+
+example : (p → q) → (¬q → ¬p) :=
+  fun h hnq hp =>
+    hnq (h hp)
+
+example : p ∨ False -> p := by
+  rintro (hp | f)
+  exact hp
+  exact False.elim f
+
+example : p ∧ False → False := by
+  rintro ⟨ _, f ⟩
+  exact f
+
+
 variable (p: Prop)
 #check ¬p
 
 example : ¬p → p → False :=
-  fun not_p p => not_p p
+  fun hnp hp => hnp hp
 -- ¬p can be rewritten as (p → False)
 example : (p → False) → p → False :=
-  fun not_p p => not_p p
+  fun hnp hp => hnp hp
 
 -- so we can just make it id function
 example : ¬p → p → False := id
-
-end
