@@ -53,6 +53,32 @@ example : ¬p ∨ ¬q → ¬(p ∧ q) := by
   exact np hp
   exact nq hq
 
+-- proof 1 with tactics
+example : (¬p ∨ q) → (p → q) := by
+  rintro (hnp | hq) hp
+  exact absurd hp hnp
+  exact hq
+
+-- proof2: fp
+example : (¬p ∨ q) → (p → q) :=
+  fun h hp =>
+  match h with
+  | Or.inl hnp => absurd hp hnp
+  | Or.inr hq => hq
+
+-- proof 1 with fp
+example : ¬(p ∧ ¬p) :=
+  fun ⟨ hp, hnp ⟩ => hnp hp
+
+-- proof 2 (explicit negation as fun → False)
+example : (p ∧ ¬p) → False :=
+  fun ⟨ hp, hnp ⟩ => hnp hp
+
+-- proof 3 with tactics
+example : ¬(p ∧ ¬p) := by
+  rintro ⟨ hp, hnp ⟩
+  exact hnp hp
+
 variable (p: Prop)
 #check ¬p
 
