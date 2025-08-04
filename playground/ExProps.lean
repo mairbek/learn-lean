@@ -129,3 +129,10 @@ example: (p → q) → (¬p ∨ q) := by
   have h_p_np := Classical.em p
   have h_np_p := Or.symm h_p_np
   exact Or.imp_right hpq h_np_p
+
+example : (¬q → ¬p) → (p → q) := by
+  intro hnqp
+  obtain (hq | hnq) := Classical.em q
+  ·
+    exact fun hp => hq
+  · exact fun hp => (hnqp hnq).elim hp
