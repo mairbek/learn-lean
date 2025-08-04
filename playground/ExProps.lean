@@ -113,3 +113,19 @@ example : (p → False) → p → False :=
 
 -- so we can just make it id function
 example : ¬p → p → False := id
+
+theorem not_imp_add {p q} : ¬ (p → q) → p ∧ ¬ q := by
+  intro hnpq
+  obtain (hp | hnp) := Classical.em p
+  · suffices hnq : ¬q from And.intro hp hnq
+    exact fun hq => hnpq (fun _ => hq)
+  ·
+    have hpq : p → q := fun hp => absurd hp hnp
+    exact False.elim (hnpq hpq)
+
+-- mairbek's attempt
+example: (p → q) → (¬p ∨ q) := by
+  intro hpq
+  have h_p_np := Classical.em p
+  have h_np_p := Or.symm h_p_np
+  exact Or.imp_right hpq h_np_p
