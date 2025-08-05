@@ -145,3 +145,15 @@ example : ¬(p ∧ q) → ¬p ∨ ¬q := by
     exact Or.inr hnq
   ·
     exact Or.inl hnp
+
+example : (((p → q) → p) → p) := by
+  intro h
+  obtain (hpq | hnpq) := Classical.em (p → q)
+  ·
+    exact h hpq
+  ·
+    exact Classical.byContradiction
+      (fun hnp => by
+        have hpq: p → q := fun hp => absurd hp hnp
+        exact hnpq hpq
+      )
