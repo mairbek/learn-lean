@@ -146,3 +146,12 @@ example : ¬(p → q) → p ∧ ¬q := by
   ·
     have imp : p → q := fun hp => hnp.elim hp
     exact h.elim imp
+
+example : ¬(p ∧ q) → ¬p ∨ ¬q := by
+  intro h
+  obtain (hp | hnp) := Classical.em p
+  ·
+    have hnq : ¬q := fun hq => h ⟨ hp, hq ⟩
+    exact Or.inr hnq
+  ·
+    exact Or.inl hnp
