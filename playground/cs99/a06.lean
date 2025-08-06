@@ -140,15 +140,63 @@ example : ((p ∨ q) → r) ↔ (p → r) ∧ (q → r) := by
       · exact hpr hp
       · exact hqr hq
   exact ⟨mp, mpr⟩
-example : ¬(p ∨ q) ↔ ¬p ∧ ¬q := sorry
-example : ¬p ∨ ¬q → ¬(p ∧ q) := sorry
-example : ¬(p ∧ ¬p) := sorry
-example : p ∧ ¬q → ¬(p → q) := sorry
-example : ¬p → (p → q) := sorry
-example : (¬p ∨ q) → (p → q) := sorry
-example : p ∨ False ↔ p := sorry
-example : p ∧ False ↔ False := sorry
-example : (p → q) → (¬q → ¬p) := sorry
+
+example : ¬(p ∨ q) ↔ ¬p ∧ ¬q := by
+  have mp: ¬(p ∨ q) → ¬p ∧ ¬q := by
+    intro h
+    have hnp := λ hp => h (Or.inl hp)
+    have hnq := λ hq => h (Or.inr hq)
+    exact ⟨hnp, hnq⟩
+  have mpr: ¬p ∧ ¬q → ¬(p ∨ q)  := by
+    intro h
+    obtain ⟨hnp, hnq⟩ := h
+    exact λ hpq => by
+      obtain (hp | hq) := hpq
+      · exact hnp hp
+      · exact hnq hq
+  exact ⟨mp, mpr⟩
+
+example : ¬p ∨ ¬q → ¬(p ∧ q) := by
+  rintro (hnp | hnq) ⟨hp, hq⟩
+  · exact hnp hp
+  · exact hnq hq
+
+example : ¬(p ∧ ¬p) := by
+  intro ⟨ hp, hnp⟩
+  exact hnp hp
+
+example : p ∧ ¬q → ¬(p → q) := by
+  intro ⟨hp, hnq⟩ h
+  exact hnq (h hp)
+
+example : ¬p → (p → q) := by
+  intro np hp
+  exact np.elim hp
+
+example : (¬p ∨ q) → (p → q) := by
+  rintro (hnp | hq) hp
+  · exact hnp.elim hp
+  · exact hq
+
+example : p ∨ False ↔ p := by
+  have mp: p ∨ False → p := by
+    rintro (hp | False)
+    · exact hp
+    · exact False.elim
+  have mpr: p → p ∨ False := by
+    intro hp
+    exact Or.inl hp
+  exact ⟨mp, mpr⟩
+
+example : p ∧ False ↔ False := by
+  constructor
+  · intro ⟨_, False⟩
+    exact False
+  · exact False.elim
+
+example : (p → q) → (¬q → ¬p) := by
+  intro hpq hnq hp
+  exact hnq.elim (hpq hp)
 end
 
 /- Q3:
