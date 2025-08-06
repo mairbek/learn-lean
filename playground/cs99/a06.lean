@@ -208,13 +208,58 @@ open Classical
 
 variable (p q r : Prop)
 
-example : (p → q ∨ r) → ((p → q) ∨ (p → r)) := sorry
-example : ¬(p ∧ q) → ¬p ∨ ¬q := sorry
-example : ¬(p → q) → p ∧ ¬q := sorry
-example : (p → q) → (¬p ∨ q) := sorry
-example : (¬q → ¬p) → (p → q) := sorry
-example : p ∨ ¬p := sorry
-example : (((p → q) → p) → p) := sorry
+example : (p → q ∨ r) → ((p → q) ∨ (p → r)) := by
+  intro h
+  obtain (hp | hnp) := Classical.em p
+  ·
+    obtain (hq | hr) := h hp
+    · exact Or.inl λ _ => hq
+    · exact Or.inr λ _ => hr
+  ·
+    have hpq : p → q := λ hp => hnp.elim hp
+    exact Or.inl hpq
+
+example : ¬(p ∧ q) → ¬p ∨ ¬q := by
+  intro h
+  obtain (hp | hnp) := Classical.em p
+  ·
+    have hnq : ¬q := fun hq => h ⟨ hp, hq ⟩
+    exact Or.inr hnq
+  ·
+    exact Or.inl hnp
+
+example : ¬(p → q) → p ∧ ¬q := by
+  intro h
+  obtain (hp | hnp) := Classical.em p
+  ·
+    have hnq : ¬ q := fun hq => h (fun _ => hq)
+    exact ⟨ hp, hnq ⟩
+  ·
+    have imp : p → q := fun hp => hnp.elim hp
+    exact h.elim imp
+
+example: (p → q) → (¬p ∨ q) := by
+  intro h
+  obtain (hp | hnp) := Classical.em p
+  · exact Or.inr (h hp)
+  · exact Or.inl hnp
+
+example : (¬q → ¬p) → (p → q) := by
+  intro hnqp
+  obtain (hq | hnq) := Classical.em q
+  · exact fun hp => hq
+  · exact fun hp => (hnqp hnq).elim hp
+
+example : p ∨ ¬p := Classical.em p
+
+example : (((p → q) → p) → p) := by
+  intro h
+  obtain (hp | hnp) := Classical.em p
+  ·
+    exact hp
+  .
+    have hpq : p → q := fun hp => absurd hp hnp
+    exact h hpq
 /-- How would you prove this informally? -/
 example : (p ∧ ¬ p) → 1 = 0 := sorry
 end
