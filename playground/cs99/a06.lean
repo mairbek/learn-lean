@@ -119,8 +119,27 @@ example : p ∨ (q ∧ r) ↔ (p ∨ q) ∧ (p ∨ r) := by
   exact ⟨ mp, mpr ⟩
 
 -- other properties
-example : (p → (q → r)) ↔ (p ∧ q → r) := sorry
-example : ((p ∨ q) → r) ↔ (p → r) ∧ (q → r) := sorry
+example : (p → (q → r)) ↔ (p ∧ q → r) := by
+  have mp :(p → (q → r)) → (p ∧ q → r) := by
+    intro h
+    exact λ ⟨hp, hq⟩  => h hp hq
+  have mpr : (p ∧ q → r) → (p → (q → r)) := by
+    intro h
+    exact λ hp hq => h ⟨hp, hq⟩
+  exact ⟨mp, mpr⟩
+
+example : ((p ∨ q) → r) ↔ (p → r) ∧ (q → r) := by
+  have mp : ((p ∨ q) → r) → (p → r) ∧ (q → r) := by
+    intro h
+    exact ⟨λ hp => h (Or.inl hp), λ hq => h (Or.inr hq)⟩
+  have mpr : (p → r) ∧ (q → r) → ((p ∨ q) → r) := by
+    intro h
+    have ⟨hpr, hqr⟩  := h
+    exact λ hpqr => by
+      obtain (hp | hq) := hpqr
+      · exact hpr hp
+      · exact hqr hq
+  exact ⟨mp, mpr⟩
 example : ¬(p ∨ q) ↔ ¬p ∧ ¬q := sorry
 example : ¬p ∨ ¬q → ¬(p ∧ q) := sorry
 example : ¬(p ∧ ¬p) := sorry
