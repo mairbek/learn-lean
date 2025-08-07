@@ -261,7 +261,9 @@ example : (((p → q) → p) → p) := by
     have hpq : p → q := fun hp => absurd hp hnp
     exact h hpq
 /-- How would you prove this informally? -/
-example : (p ∧ ¬ p) → 1 = 0 := sorry
+example : (p ∧ ¬ p) → 1 = 0 := by
+  rintro ⟨ hp, hnp ⟩
+  exact absurd hp hnp
 end
 
 /- Q4:
@@ -273,5 +275,11 @@ section
 variable (men : Type) (barber : men)
 variable (shaves : men → men → Prop)
 
-example (h : ∀ x : men, shaves barber x ↔ ¬ shaves x x) : False := sorry
-end
+example (h : ∀ x : men, shaves barber x ↔ ¬ shaves x x) : False := by
+  have hb : shaves barber barber ↔ ¬ shaves barber barber := h barber
+  rcases hb with ⟨fwd, rev⟩
+  obtain (hpos | hneg) := Classical.em (shaves barber barber)
+  ·
+    exact (fwd hpos) hpos
+  ·
+    exact hneg (rev hneg)
