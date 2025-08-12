@@ -54,7 +54,12 @@ end
 /- Q3:
 Write a function which conforms to this type.
 -/
-def upperBound (x y : Nat) : { z // z ≤ x ∧ z ≤ y } := sorry
+def upperBound (x y : Nat) : { z // z ≤ x ∧ z ≤ y } :=
+  if h: y <= x then
+    ⟨y, ⟨h, Nat.le_refl y⟩⟩
+  else
+    have hx : x ≤ y := (Nat.le_total x y).resolve_right h
+    ⟨x, ⟨Nat.le_refl x, hx⟩⟩
 
 /- Q4:
 Prove
