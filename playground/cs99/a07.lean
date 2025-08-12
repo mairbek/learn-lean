@@ -24,10 +24,10 @@ example (x y : Nat) : x = y + 1 → x + 1 = y + 2 := by
 
 example (n : Nat) : 0 < n → n < 2 * n := by
   intro h
-  have h1 := Nat.add_le_add h (Nat.le_refl n)
-  rw [Nat.add_comm] at h1
+  have h' := Nat.add_le_add h (Nat.le_refl n)
+  rw [Nat.add_comm] at h'
   rw [Nat.two_mul]
-  exact h1
+  exact h'
 end
 
 /- Q2:
@@ -42,10 +42,13 @@ example (x : Nat) : x - 1 ≤ x := by
   exact Nat.sub_le x 1
 example (x y : Nat) : x = y + 1 → x + 1 = y + 2 := by
   -- simp
-  -- exact fun a => (fun {m k n} => Nat.add_left_inj.mpr) a
-  sorry
+  intro h
+  rw [h]
+  -- sorry
 example (n : Nat) : 0 < n → n < 2 * n := by
-  sorry
+  intro h
+  have h' := Nat.add_lt_add_left h n   -- n + 0 < n + n
+  simpa [Nat.two_mul, Nat.add_zero] using h'
 end
 
 /- Q3:
