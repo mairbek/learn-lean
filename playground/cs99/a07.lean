@@ -131,14 +131,23 @@ Formalize these mathematical statements
 -/
 section
 /-- For any natural number n,  There exists m s.t. m > n and m is even -/
-def greater_than_even : Prop := sorry
+def IsEven (a : Nat) : Prop := ∃ b, a = 2 * b
+def greater_than_even(n : Nat) := ∃m: Nat, m > n ∧ (IsEven m)
+
 /-- For any two natural numbers n,m, there is a natural number which divides
 both of them such that no larger number has this property. -/
-def greatest_common_divisor : Prop := sorry
-/-- No natural number may be equalt o its successor -/
-def no_eq_succ : Prop := sorry
+def greatest_common_divisor(n m: Nat) : Prop :=
+  ∃ d, d ∣ n ∧ d ∣ m ∧ ∀ e, e ∣ n → e ∣ m → e ≤ d
+
+/-- No natural number may be equal to its successor -/
+def no_eq_succ : Prop := ¬∃n : Nat, n = n.succ
 /-- There exists a natural number strictly between 11 and 12 -/
-def nat_between : Prop := sorry
+def nat_between : Prop := ∃n, n > 11 ∧ n < 12
 /-- There exists a natural number that is divisible by 3, 5, 7 which is less than 200 -/
-def div357 : Prop := sorry
+def div357(n: Nat) : Prop := 3∣n ∧ 5∣n ∧ 7∣n ∧ n < 200
+
+example: ∃n, 3∣n ∧ 5∣n ∧ 7∣n ∧ n < 200 := by
+  have h: 3∣105 ∧ 5∣105 ∧ 7∣105 ∧ 105 < 200 := by simp
+  exact Exists.intro 105 h
+
 end
