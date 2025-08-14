@@ -78,8 +78,17 @@ example : (∀ x, p x ∧ q x) ↔ (∀ x, p x) ∧ (∀ x, q x) := by
   · intro ⟨ hp, hq ⟩
     exact fun x => ⟨hp x, hq x⟩
 
-example : (∀ x, p x → q x) → (∀ x, p x) → (∀ x, q x) := sorry
-example : (∀ x, p x) ∨ (∀ x, q x) → ∀ x, p x ∨ q x := sorry
+example : (∀ x, p x → q x) → (∀ x, p x) → (∀ x, q x) := by
+  intro hpqx hpx x
+  have hpq := hpqx x
+  have hp := hpx x
+  exact hpq hp
+
+example : (∀ x, p x) ∨ (∀ x, q x) → ∀ x, p x ∨ q x := by
+  intro h x
+  obtain (hpx | hqx) := h
+  · exact Or.inl (hpx x)
+  · exact Or.inr (hqx x)
 
 -- These may require classical logic.
 variable (r : Prop)
