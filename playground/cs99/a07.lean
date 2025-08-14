@@ -35,16 +35,15 @@ Prove with tactics
 -/
 section
 example (x : Nat) : x < x + 1 := by
-  -- simp
   exact Nat.lt_add_one x
+
 example (x : Nat) : x - 1 ≤ x := by
-  -- simp
   exact Nat.sub_le x 1
+
 example (x y : Nat) : x = y + 1 → x + 1 = y + 2 := by
-  -- simp
   intro h
   rw [h]
-  -- sorry
+
 example (n : Nat) : 0 < n → n < 2 * n := by
   intro h
   have h' := Nat.add_lt_add_left h n   -- n + 0 < n + n
@@ -66,8 +65,19 @@ Prove
 -/
 section
 variable (α : Type) (p q : α → Prop)
+-- example from the book
+example : (∀ x, p x ∧ q x) → ∀ x, p x :=
+  fun h : ∀ x, p x ∧ q x =>
+  fun x => show p x from (h x).left
 
-example : (∀ x, p x ∧ q x) ↔ (∀ x, p x) ∧ (∀ x, q x) := sorry
+
+example : (∀ x, p x ∧ q x) ↔ (∀ x, p x) ∧ (∀ x, q x) := by
+  constructor
+  · intro h
+    exact ⟨(fun x => (h x).left), (fun x => (h x).right)⟩
+  · intro ⟨ hp, hq ⟩
+    exact fun x => ⟨hp x, hq x⟩
+
 example : (∀ x, p x → q x) → (∀ x, p x) → (∀ x, q x) := sorry
 example : (∀ x, p x) ∨ (∀ x, q x) → ∀ x, p x ∨ q x := sorry
 
