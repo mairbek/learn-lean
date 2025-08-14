@@ -131,8 +131,7 @@ Formalize these mathematical statements
 -/
 section
 /-- For any natural number n,  There exists m s.t. m > n and m is even -/
-def IsEven (a : Nat) : Prop := ∃ b, a = 2 * b
-def greater_than_even(n : Nat) := ∃m: Nat, m > n ∧ (IsEven m)
+def greater_than_even(n : Nat) := ∃m: Nat, m > n ∧ 2∣m
 
 /-- For any two natural numbers n,m, there is a natural number which divides
 both of them such that no larger number has this property. -/
