@@ -93,7 +93,12 @@ example : (∀ x, p x) ∨ (∀ x, q x) → ∀ x, p x ∨ q x := by
 -- These may require classical logic.
 variable (r : Prop)
 
-example : α → ((∀ x : α, r) ↔ r) := sorry
+example : α → ((∀ _ : α, r) ↔ r) := by
+  intro x
+  have mp : (∀x:α, r) → r := fun hr => hr x
+  have mpr : r → (∀ x : α, r) := fun hr _ => hr
+  exact ⟨mp, mpr⟩
+
 example : (∀ x, p x ∨ r) ↔ (∀ x, p x) ∨ r := sorry
 example : (∀ x, r → p x) ↔ (r → ∀ x, p x) := sorry
 end
