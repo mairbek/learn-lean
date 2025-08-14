@@ -99,8 +99,31 @@ example : α → ((∀ _ : α, r) ↔ r) := by
   have mpr : r → (∀ x : α, r) := fun hr _ => hr
   exact ⟨mp, mpr⟩
 
-example : (∀ x, p x ∨ r) ↔ (∀ x, p x) ∨ r := sorry
-example : (∀ x, r → p x) ↔ (r → ∀ x, p x) := sorry
+example : (∀ x, p x ∨ r) ↔ (∀ x, p x) ∨ r := by
+  constructor
+  ·
+    intro h
+    obtain (hr | hnr) := Classical.em r
+    · exact Or.inr hr
+    ·
+      exact Or.inl fun x => by
+        obtain (hx | hr) := h x
+        · exact hx
+        · exact hnr.elim hr
+  ·
+    intro h x
+    obtain (h1 | hr) := h
+    · exact Or.inl (h1 x)
+    · exact Or.inr hr
+
+example : (∀ x, r → p x) ↔ (r → ∀ x, p x) := by
+  constructor
+  ·
+    intro h hr x
+    exact h x hr
+  ·
+    intro h x hr
+    exact (h hr) x
 end
 
 /- Q5:
