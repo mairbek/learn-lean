@@ -74,7 +74,10 @@ Prove that any nonempty `List α` has a head element.
 -/
 
 theorem List.exists_head : ∀ (l : List α), l ≠ nil → ∃ x xs, cons x xs = l := by
-  sorry
+  intro hl _hnn
+  cases hl
+  case cons x' xs' => exact ⟨x', xs', rfl⟩
+  case nil => contradiction
 
 -- A function `length` that computes the length of a list.
 def List.length : List α → Nat
