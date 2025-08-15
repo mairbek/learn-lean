@@ -36,7 +36,11 @@ theorem even_add_two : Even n → Even (n + 2) := by
 Define `sum_up` by recursion.
 -/
 
-def sum : Nat → Nat := sorry
+def sum : Nat → Nat
+  | 0     => 0
+  | n + 1 => sum n + (n + 1)
+
+#eval sum 6
 
 /-!
 ## 4. Sum formula: `sum_up n ≥ n`
@@ -48,7 +52,16 @@ theorem sum_ne_gt (n : Nat) : ¬(n > sum n) := by
   -- prove the extra goal introduced by `suffices`.
   -- Proceed by induction on `k` for the rest of the proof. Use the `apply?` tactic
   -- to let Lean suggest the appropriate theorem to complete the proof.
-  sorry
+  suffices h : ∀ k, k ≤ sum k by
+    -- if we have that, plug in k = n and flip > to ¬> using not_lt_of_ge
+    exact Nat.not_lt_of_ge (h n)
+  intro k
+  induction k
+  case zero => exact Nat.zero_le (sum 0)
+  case succ n h=>
+    have hupper : n + n + 1 <= sum (n + 1) := Nat.add_le_add_right h (n + 1)
+    have hlower : n + 1 ≤ n + n + 1 := Nat.le_add_left (n + 1) n
+    exact Nat.le_trans hlower hupper
 
 -- Let's define a simple list type and prove some properties about it.
 inductive List α where
