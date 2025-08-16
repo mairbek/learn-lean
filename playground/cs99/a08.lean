@@ -97,6 +97,15 @@ Prove that the length of the append of two lists is the sum of their lengths.
 theorem List.length_append : ∀ (xs ys : List α), length (append xs ys) = length xs + length ys := by
   -- Use `induction` on `xs` and `unfold` the definition of `List.append`.
   -- Use `apply?` to let Lean suggest the appropriate theorem to complete the proof.
-  sorry
-
-end A08
+  intro hx hy
+  induction hx
+  case nil =>
+    unfold List.append List.length
+    simp [Nat.zero_add]
+  case cons x' xs' hi =>
+    -- simpa [List.append, List.length, Nat.add_assoc]
+    unfold List.append List.length
+    rw [hi]
+    rw [Nat.add_assoc]
+    simp [List.length]
+    exact length.eq_def hy
