@@ -55,7 +55,12 @@ theorem zero_add : zero + n = n := by
 
 
 theorem le_add : m ≤ m + n := by
-  sorry
+  -- have h := LE.refl m
+  induction n
+  case zero => exact LE.refl m
+  case succ n' hn =>
+    refine LE.succ ?_
+    exact hn
 
 -- Alright, let's start automating more!
 attribute [simp] add mul
