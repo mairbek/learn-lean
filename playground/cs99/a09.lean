@@ -48,17 +48,17 @@ infix:50 (priority := high) " ≤ " => LE
 -- * `simp/simp_all`... are powerful and basically always useful, though make sure that you could also
 --   do the proof without them
 theorem zero_add : zero + n = n := by
-  induction n
-  case zero => rfl
-  case succ _n hn =>
+  induction n with
+  | zero => rfl
+  | succ _n hn =>
     exact congrArg succ hn
 
 
 theorem le_add : m ≤ m + n := by
   -- have h := LE.refl m
-  induction n
-  case zero => exact LE.refl m
-  case succ n' hn =>
+  induction n with
+  | zero => exact LE.refl m
+  | succ n' hn =>
     refine LE.succ ?_
     exact hn
 
@@ -67,7 +67,8 @@ attribute [simp] add mul
 -- These definitions will now automatically be unfolded when you use `simp/simp_all`
 
 theorem add_comm_helper : (m + n).succ = m.succ + n := by
-  sorry
+  -- induction n
+  -- case
 
 -- This one is a bit more tricky, you might need to prove a helper lemma!
 theorem add_comm : n + m = m + n := by
