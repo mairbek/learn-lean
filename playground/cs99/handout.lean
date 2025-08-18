@@ -117,3 +117,7 @@ example (x : Nat) : recinc x = x + 1 := by
   rewrite [Nat.add_comm 1 (n + 1)]
   rfl
 --- end
+
+example (x y : Nat) (f : Nat → Nat) : f (x + y + 1) = f (y + x + 1) := by
+  congr 2
+  apply Nat.add_comm

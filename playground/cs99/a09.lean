@@ -81,7 +81,15 @@ theorem add_comm : n + m = m + n := by
 
 -- Associativity can be proven in a similar way.
 theorem add_assoc : (m + n) + k = m + (n + k) := by
-  sorry
+  induction m with
+  | zero =>
+    rw [zero_add]
+    rw [zero_add]
+  | succ m' hm =>
+    rw [← @add_comm_helper]
+    rw [← @add_comm_helper]
+    rw [hm]
+    rw [<- add_comm_helper]
 
 def one := succ zero
 
