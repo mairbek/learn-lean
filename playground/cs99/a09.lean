@@ -67,12 +67,17 @@ attribute [simp] add mul
 -- These definitions will now automatically be unfolded when you use `simp/simp_all`
 
 theorem add_comm_helper : (m + n).succ = m.succ + n := by
-  -- induction n
-  -- case
+  induction n with
+  | zero => rfl
+  | succ n' hn => exact congrArg succ hn
 
 -- This one is a bit more tricky, you might need to prove a helper lemma!
 theorem add_comm : n + m = m + n := by
-  sorry
+  induction m with
+  | zero => exact Eq.symm zero_add
+  | succ m' hm =>
+    rw [<- add_comm_helper]
+    exact congrArg succ hm
 
 -- Associativity can be proven in a similar way.
 theorem add_assoc : (m + n) + k = m + (n + k) := by
