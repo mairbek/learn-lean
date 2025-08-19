@@ -94,7 +94,7 @@ theorem add_assoc : (m + n) + k = m + (n + k) := by
 def one := succ zero
 
 theorem mul_one : m * one = m := by
-  sorry
+  simp [one, mul, zero_add]
 
 -- To prove associativity of multiplication, you might have to come up with
 -- some more lemmas about multiplication first. Some are similar to the above laws of
