@@ -47,7 +47,7 @@ infix:50 (priority := high) " ≤ " => LE
 -- * `apply/exact`
 -- * `simp/simp_all`... are powerful and basically always useful, though make sure that you could also
 --   do the proof without them
-theorem zero_add : zero + n = n := by
+theorem zero_add {n} : zero + n = n := by
   induction n with
   | zero => rfl
   | succ _n hn =>
@@ -161,9 +161,37 @@ structure Monoid (α : Type) extends Semigroup α where
   mul_e : mul a e = a
 
 -- You should now be able to instantiate two of them, including proofs!
-def Nat_add_Monoid : Monoid Nat := sorry
+def Nat_add_Semigroup : Semigroup Nat := by
+  constructor
+  · exact add_assoc
 
-def Nat_mul_Monoid : Monoid Nat := sorry
+def Nat_add_Monoid : Monoid Nat := by
+  refine
+  { toSemigroup := Nat_add_Semigroup
+    e           := zero
+    e_mul       := by
+      intro a
+      exact @zero_add a
+    mul_e       := fun {a} => rfl }
+
+def Nat_mul_Semigroup : Semigroup Nat := by
+  constructor
+  · exact mul_assoc
+
+def Nat_mul_Monoid : Monoid Nat := by
+  refine
+  { toSemigroup := Nat_mul_Semigroup
+    e           := one
+    e_mul       := by
+      intro a
+      exact @one_mul a
+    mul_e       := by
+      intro a
+      have h := @one_mul a
+      rw [mul_comm] at h
+      exact h
+  }
+
 
 -- Let's now prove a theorem about trees. We will define a tree as either a leaf or a node with
 -- a left and right subtree. The value of the node is stored in the middle.
