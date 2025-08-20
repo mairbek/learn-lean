@@ -192,7 +192,6 @@ def Nat_mul_Monoid : Monoid Nat := by
       exact h
   }
 
-
 -- Let's now prove a theorem about trees. We will define a tree as either a leaf or a node with
 -- a left and right subtree. The value of the node is stored in the middle.
 inductive Tree (α) where
@@ -208,7 +207,12 @@ inductive Tree (α) where
 -- The `@[simp]` attribute tells Lean to automatically unfold the definition of `mirror` when
 -- using `simp` or `simp_all`. This is similar to what we did for addition and multiplication.
 theorem Tree.mirror_involutive : ∀ (t : Tree α), t.mirror.mirror = t := by
-  sorry
+  intro t
+  induction t with
+  | leaf => simp
+  | node l v r lh rh =>
+    simp [mirror]
+    exact ⟨lh, rh⟩
 
 -- Finally, let's define a `reverse` function for lists and prove an interesting
 -- property about it: that reversing a list twice gives you the original list back.
@@ -220,6 +224,8 @@ theorem Tree.mirror_involutive : ∀ (t : Tree α), t.mirror.mirror = t := by
 theorem rev_rev_helper : ∀ ys, rev (rev xs ++ ys) = rev ys ++ xs := by
   -- Remember to use `apply?` to let Lean suggest the appropriate theorem to complete proofs.
   -- `simp` knows a lot about `++`. Use `simp?` tactic to see what it knows.
+  -- refine fun ys => ?_
+  -- refine fun ys => ?_
   sorry
 
 -- Now you can prove the main theorem!
