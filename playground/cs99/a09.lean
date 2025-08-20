@@ -115,7 +115,7 @@ theorem succ_plus_one : succ m = m + one := by
 -- some more lemmas about multiplication first. Some are similar to the above laws of
 -- addition, some use both addition and multiplication ("distributivity" is the keyword).
 
-theorem mul_add : (a + b) * c = a * c + b * c := by
+theorem mul_distr : (a + b) * c = a * c + b * c := by
   induction c with
   | zero =>
     simp [mul_zero, zero_add]
@@ -129,7 +129,7 @@ theorem mul_add : (a + b) * c = a * c + b * c := by
 
 theorem mul_succ : succ m * n = m * n + n := by
   rw [succ_plus_one]
-  rw [mul_add]
+  rw [mul_distr]
   rw [one_mul]
 
 theorem mul_comm {n m} : n * m = m * n := by
@@ -147,7 +147,7 @@ theorem mul_assoc : (m * n) * k = m * (n * k) := by
     simp [mul_zero]
   | succ _ hm =>
     simp [mul_succ]
-    simp [mul_add]
+    simp [mul_distr]
     simp [hm]
 
 -- Remember the structures for semigroups and monoids which we defined last week?
