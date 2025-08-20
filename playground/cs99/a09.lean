@@ -72,7 +72,7 @@ theorem add_comm_helper : (m + n).succ = m.succ + n := by
   | succ n' hn => exact congrArg succ hn
 
 -- This one is a bit more tricky, you might need to prove a helper lemma!
-theorem add_comm : n + m = m + n := by
+theorem add_comm {n m} : n + m = m + n := by
   induction m with
   | zero => exact Eq.symm zero_add
   | succ m' hm =>
@@ -93,15 +93,62 @@ theorem add_assoc : (m + n) + k = m + (n + k) := by
 
 def one := succ zero
 
-theorem mul_one : m * one = m := by
-  simp [one, mul, zero_add]
+theorem mul_zero {n}: zero * n = zero := by
+  induction n with
+  | zero => rfl
+  | succ n' hn => exact hn
+
+theorem one_mul : one * m = m := by
+  rw [one]
+  induction m with
+  | zero =>
+    rw [mul]
+  | succ m' hm =>
+    rw [mul]
+    rw [hm]
+    rfl
+
+theorem succ_plus_one : succ m = m + one := by
+  rfl
 
 -- To prove associativity of multiplication, you might have to come up with
 -- some more lemmas about multiplication first. Some are similar to the above laws of
 -- addition, some use both addition and multiplication ("distributivity" is the keyword).
 
+theorem mul_add : (a + b) * c = a * c + b * c := by
+  induction c with
+  | zero =>
+    simp [mul_zero, zero_add]
+  | succ a' ha =>
+    simp [mul]
+    simp [ha]
+    simp [add_assoc]
+    apply congrArg (fun t => a * a' + t)
+    simp [← add_assoc]
+    simp [add_comm]
+
+theorem mul_succ : succ m * n = m * n + n := by
+  rw [succ_plus_one]
+  rw [mul_add]
+  rw [one_mul]
+
+theorem mul_comm {n m} : n * m = m * n := by
+  induction m with
+  | zero =>
+    simp [mul_zero]
+  | succ _ hm =>
+    rw [mul_succ]
+    rw [mul]
+    rw [hm]
+
 theorem mul_assoc : (m * n) * k = m * (n * k) := by
-  sorry
+  induction m with
+  | zero =>
+    simp [mul_zero]
+  | succ _ hm =>
+    simp [mul_succ]
+    simp [mul_add]
+    simp [hm]
 
 -- Remember the structures for semigroups and monoids which we defined last week?
 structure Semigroup (α : Type) where
