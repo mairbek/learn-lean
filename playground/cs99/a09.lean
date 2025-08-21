@@ -221,15 +221,20 @@ theorem Tree.mirror_involutive : ∀ (t : Tree α), t.mirror.mirror = t := by
   | x :: xs  => rev xs ++ [x]
 
 -- You may need to prove a helper lemma first, similar to the one for addition.
-theorem rev_rev_helper : ∀ ys, rev (rev xs ++ ys) = rev ys ++ xs := by
-  -- Remember to use `apply?` to let Lean suggest the appropriate theorem to complete proofs.
-  -- `simp` knows a lot about `++`. Use `simp?` tactic to see what it knows.
-  -- refine fun ys => ?_
-  -- refine fun ys => ?_
-  sorry
+theorem rev_rev_helper (xs : List α) : ∀ ys, rev (rev xs ++ ys) = rev ys ++ xs := by
+  induction xs with
+  | nil =>
+    simp [rev]
+  | cons _ _ _ =>
+    simp_all [rev]
+
 
 -- Now you can prove the main theorem!
 theorem rev_rev : ∀ (xs : List α), rev (rev xs) = xs := by
-  sorry
+  intro xs
+  induction xs with
+  | nil => rfl
+  | cons x' xs' ih =>
+    simp [rev, rev_rev_helper]
 
 end A09
