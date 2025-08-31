@@ -2,6 +2,10 @@ name = "Minimal"
 version = "0.1.0"
 defaultTargets = ["minimal"]
 
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+
 [[lean_exe]]
 name = "minimal"
 root = "Main"
