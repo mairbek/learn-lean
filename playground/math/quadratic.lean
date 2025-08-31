@@ -14,6 +14,6 @@ theorem quadratic_one {x : ℝ} : x^2 - x - 6 = 0 -> x = -2 ∨ x = 3 := by
 
 theorem quadratic_simple {x : ℝ} : x^2 - 2*x + 1 = 0 -> x = 1 := by
   intro h
-  have h1 : (x - 1)^2 = 0 := by linarith [h]
-  have h2 : (x - 1) = 0 := pow_eq_zero h1
+  replace h : (x - 1)^2 = 0 := by linarith
+  replace h : (x - 1) = 0 := pow_eq_zero h
   linarith
