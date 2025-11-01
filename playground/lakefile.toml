@@ -1,6 +1,7 @@
 name = "Minimal"
 version = "0.1.0"
 defaultTargets = ["minimal"]
+moreLinkArgs = ["-mmacosx-version-min=15.0.0"]
 
 [[require]]
 name = "mathlib"
