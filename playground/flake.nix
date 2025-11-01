@@ -1,47 +1,42 @@
 {
-  description = "Lean 4 Example Project";
-
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    flake-parts.url = "github:hercules-ci/flake-parts";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     lean4-nix.url = "github:lenianiva/lean4-nix";
   };
 
-  outputs = inputs @ {
-    nixpkgs,
-    flake-parts,
-    lean4-nix,
-    ...
-  }:
-    flake-parts.lib.mkFlake {inherit inputs;} {
-      systems = [
-        "aarch64-darwin"
-        "aarch64-linux"
-        "x86_64-darwin"
-        "x86_64-linux"
-      ];
+  outputs = { self, nixpkgs, ... } @ inputs:
 
-      perSystem = {
-        system,
-        pkgs,
-        ...
-      }: {
-        _module.args.pkgs = import nixpkgs {
-          inherit system;
-          overlays = [(lean4-nix.readToolchainFile ./lean-toolchain)];
-        };
+  let
+    system = "aarch64-darwin";
 
-        packages.default =
-          (pkgs.lean.buildLeanPackage {
-            name = "Example";
-            roots = ["Main"];
-            src = pkgs.lib.cleanSource ./.;
-          })
-          .executable;
+    # TODO: fix lean4-nix (error: version 7)
+    lean-toolchain = inputs.lean4-nix.readToolchainFile ./lean-toolchain;
 
-        devShells.default = pkgs.mkShell {
-          packages = with pkgs.lean; [lean-all];
-        };
+    pkgs = import nixpkgs {
+      inherit system;
+      # overlays = [ lean-toolchain ];
+    };
+
+    lake2nix = inputs.lean4-nix.lake { inherit pkgs; };
+    playground = lake2nix.mkPackage { src = ./.; };
+
+  in {
+
+    packages.${system} = {
+      # default = playground.executable;
+    };
+
+    devShells.${system} = {
+      default = pkgs.mkShell {
+        buildInputs = with pkgs; [
+          elan # lean.elan
+          tectonic
+        ];
+        shellHook = ''
+          lake exe cache get
+          du -sh .lake
+        '';
       };
     };
+  };
 }
